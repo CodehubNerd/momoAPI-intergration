@@ -18,7 +18,9 @@ app.use(morgan("common"));
 
 
 const allowedOrigins = [
-    'http://127.0.0.1:5500',
+    'https://mtn-momo-ui.netlify.app/',
+    'https://mtn-momo-api.onrender.com/',
+    'https://mtn-momo-api.onrender.com/api',
 
 ];
 
