@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const uuidv4 = require('uuid').v4;
 
 
 const momoHost = 'sandbox.momodeveloper.mtn.com';
@@ -58,15 +59,15 @@ router.post('/request-to-pay', async (req, res) => {
         const referenceId = uuidv4();
 
         const body = {
-            amount: amount,
-            currency: currency,
-            externalId: externalId,
+            amount: totalAmount,
+            currency: "EUR",
+            externalId: 15322,
             payer: {
-                partyIdType: partyIdType,
+                partyIdType: 'MSISDN',
                 partyId: phoneNumber,
             },
-            payerMessage: payerMessage,
-            payeeNote: payeeNote,
+            payerMessage: "paying for DSTV",
+            payeeNote: "Monthly payaments",
         };
 
         const momoResponse = await axios.post(
@@ -76,6 +77,7 @@ router.post('/request-to-pay', async (req, res) => {
                 headers: {
                     'X-Reference-Id': referenceId,
                     'X-Target-Environment': 'sandbox',
+                    'Ocp-Apim-Subscription-Key': '36a9cea744d74f268f28dc01085bc3be',
                     Authorization: `Bearer ${momoToken}`,
                     'Content-type': 'application/json',
                     'Cache-Control': 'no-cache',
