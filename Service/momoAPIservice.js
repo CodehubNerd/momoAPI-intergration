@@ -77,7 +77,7 @@ router.post('/request-to-pay', async (req, res) => {
                 headers: {
                     'X-Reference-Id': referenceId,
                     'X-Target-Environment': 'sandbox',
-                    'Ocp-Apim-Subscription-Key': '36a9cea744d74f268f28dc01085bc3be',
+                    'Ocp-Apim-Subscription-Key': process.env.OCP_APIM_KEY,
                     Authorization: `Bearer ${momoToken}`,
                     'Content-type': 'application/json',
                     'Cache-Control': 'no-cache',
