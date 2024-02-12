@@ -17,10 +17,9 @@ app.use(helmet());
 app.use(morgan("common"));
 
 
-
 const allowedOrigins = [
     'http://127.0.0.1:5500',
-
+    '*'
 ];
 
 
