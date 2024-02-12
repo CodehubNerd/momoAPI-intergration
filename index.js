@@ -16,13 +16,9 @@ app.use(helmet());
 app.use(morgan("common"));
 
 
-
 const allowedOrigins = [
-    'https://mtn-momo-ui.netlify.app/',
-    'https://mtn-momo-ui.netlify.app',
-    'https://mtn-momo-api.onrender.com/',
-    'https://mtn-momo-api.onrender.com/api',
-
+    'http://127.0.0.1:5500',
+    '*'
 ];
 
 

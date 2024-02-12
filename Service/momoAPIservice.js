@@ -1,39 +1,49 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const uuidv4 = require('uuid').v4;
+
 
 const momoHost = 'sandbox.momodeveloper.mtn.com';
-const momoTokenUrl = `https://${momoHost}/collection/token`;
+const momoTokenUrl = `https://${momoHost}/collection/token/`;
 const momoRequestToPayUrl = `https://${momoHost}/collection/v1_0/requesttopay`;
 
 let momoToken = null;
 
-//get token
+
+// Endpoint to get token
 router.post('/get-momo-token', async (req, res) => {
     try {
-        const { apiKey, subscriptionKey } = req.body;
-        console.log('apikey', apiKey)
-        console.log('subscriptionKey', subscriptionKey)
+        const { apiUserId, apiKey, subscriptionKey } = req.body;
 
-        const momoTokenResponse = await axios.post(
-            momoTokenUrl,
-            {},
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Ocp-Apim-Subscription-Key': subscriptionKey,
-                    Authorization: `Basic ${apiKey}`,
-                },
-            }
-        )
-        console.log('data from mobile money', momoTokenResponse.data)
-        momoToken = momoTokenResponse.data.access_token;
+        // Concatenate API user ID and API key with a colon
+        const credentials = `${apiUserId}:${apiKey}`;
+        const encodedCredentials = Buffer.from(credentials).toString('base64');
+
+        const response = await fetch(momoTokenUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Ocp-Apim-Subscription-Key': subscriptionKey,
+                'Authorization': `Basic ${encodedCredentials}`,
+            },
+        });
+
+        const data = await response.json();
+
+        console.log('data from mobile money', data);
+        momoToken = data.access_token;
+
+        if (response.ok) {
+            res.json({ message: 'Token retrieved successfully' });
+        } else {
+            res.status(response.status).json({ message: 'Failed to retrieve token' });
+        }
     } catch (error) {
         console.error('error from mobile money', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 //request to pay 
 router.post('/request-to-pay', async (req, res) => {
@@ -48,25 +58,24 @@ router.post('/request-to-pay', async (req, res) => {
         const referenceId = uuidv4();
 
         const body = {
-            amount: totalAmount,
-            currency: 'SZL',
-            externalId: '1532',
+            amount: amount,
+            currency: currency,
+            externalId: externalId,
             payer: {
-                partyIdtype: 'MSISDN',
+                partyIdType: partyIdType,
                 partyId: phoneNumber,
             },
-            payerMessage: 'Payment for DSTV',
-            payeeNote: 'Your DSTV monthly subscriptions',
+            payerMessage: payerMessage,
+            payeeNote: payeeNote,
         };
 
         const momoResponse = await axios.post(
             momoRequestToPayUrl,
             body,
-            {},
             {
                 headers: {
                     'X-Reference-Id': referenceId,
-                    'X-Target-Enviroment': 'sandbox',
+                    'X-Target-Environment': 'sandbox',
                     Authorization: `Bearer ${momoToken}`,
                     'Content-type': 'application/json',
                     'Cache-Control': 'no-cache',
