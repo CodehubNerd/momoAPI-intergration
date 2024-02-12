@@ -25,6 +25,7 @@ router.post('/get-momo-token', async (req, res) => {
                     'Ocp-Apim-Subscription-Key': subscriptionKey,
                     Authorization: `Basic ${apiKey}`,
                 },
+
             }
         )
         console.log('data from mobile money', momoTokenResponse.data)

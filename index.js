@@ -1,4 +1,5 @@
 
+
 const express = require('express');
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -18,10 +19,7 @@ app.use(morgan("common"));
 
 
 const allowedOrigins = [
-    'https://mtn-momo-ui.netlify.app/',
-    'https://mtn-momo-ui.netlify.app',
-    'https://mtn-momo-api.onrender.com/',
-    'https://mtn-momo-api.onrender.com/api',
+    'http://127.0.0.1:5500',
 
 ];
 
